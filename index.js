@@ -39,19 +39,16 @@ const limite = rate_limit({
 });
 app.use(limite);
 
-/*
-//trocar pelo banco de dados
 const TOKENS_VALIDOS = {
-  "8abf13e5df7c9aa32d9ad1a": {
-    origem: "cloud_post_001",
-    campanha: "Consultoria em Cloud"
+  [process.env.TOKEN_1]: {
+    origem: process.env.TOKEN_1_ORIGEM,
+    campanha: process.env.TOKEN_1_CAMPANHA
   },
-  "laranja": {
-    origem: "teste_manual",
-    campanha: "Debug do Formulário"
+  [process.env.TOKEN_2]: {
+    origem: process.env.TOKEN_2_ORIGEM,
+    campanha: process.env.TOKEN_2_CAMPANHA
   }
 };
-*/
 
 
 // ------------Rotas da API
@@ -68,13 +65,21 @@ app.post('/lead', async (req, res) => {
   if (!nome || !email || !telefone || !empresa || !cargo || !token) {
     return res.status(400).json({ error: 'Campos obrigatórios ausentes.' });
   }
+
+  const tokenInfo = TOKENS_VALIDOS[token];
+  if (!tokenInfo) {
+    return res.status(401).json({ error: 'Token inválido.' });
+  }
+
+
+
   console.log('--- Novo Lead recebido ---');
   console.log(`Origem: ${req.origem}`);
   console.log(`Campanha: ${req.campanha}`);
   console.log('Dados recebidos:', req.body);
   console.log('-------------------------');
-  //console.log('Lead recebido:', req.body); 
-  //return res.status(200).json({ message: 'Lead recebido com sucesso!' });
+  console.log('Lead recebido:', req.body); 
+  return res.status(200).json({ message: 'Lead recebido com sucesso!' });
 });
 
 app.listen(PORT, () => {
