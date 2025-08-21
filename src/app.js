@@ -9,7 +9,8 @@ const cors = require("cors"); // Middleware que permite que outros dominios faç
 const rate_limit = require("express-rate-limit"); // Middleware que controla a taxa de requisições 
 const limite = rate_limit({
     windowMs:60000,
-    max: 2 //até duas requisições por minuto
+    max: 2, //até duas requisições por minuto
+    message: { error: "Você excedeu o limite de requisições. Tente novamente mais tarde." }
 });
 
 const rota_obter_lead = require("./routes/lead.routes.js");
